@@ -16,6 +16,8 @@ import os.path
 from PIL import Image
 
 from aip import AipOcr
+from tkinter import messagebox
+
 
 """ 你的 APPID AK SK """
 APP_ID = '23759270'
@@ -53,6 +55,14 @@ class BaseOptions:
         pass
 
     def launcher(self):
+        pass
+
+    def home(self):
+        # popen返回文件对象，跟open操作一样
+        cmd = r'adb -s {} shell input keyevent 3'.format(self.deviceVo.device_w)
+        with os.popen(cmd, 'r') as f:
+            text = f.read()
+        logd(text)
         pass
 
     def colse(self):
@@ -97,30 +107,24 @@ class BaseOptions:
         pass
 
     def pause(self, info="none"):
-        # popen返回文件对象，跟open操作一样
-        cmd = r'echo "pause {}:{} 暂停" >log.txt'.format(self.deviceVo.device_w, info)
-        with os.popen(cmd, 'r') as f:
-            text = f.read()
-        # logd(text)
+        messagebox.showinfo(self.deviceVo.device_w,info)
 
-        cmd = r'start log.txt'
-        with os.popen(cmd, 'r') as f:
-            text = f.read()
-        # logd(text)
+        # # popen返回文件对象，跟open操作一样
+        # cmd = r'echo "pause {}:{} 暂停" >log.txt'.format(self.deviceVo.device_w, info)
+        # with os.popen(cmd, 'r') as f:
+        #     text = f.read()
+        # # logd(text)
+        #
+        # cmd = r'start log.txt'
+        # with os.popen(cmd, 'r') as f:
+        #     text = f.read()
+        # # logd(text)
 
         cmd = r'pause'
         with os.popen(cmd, 'r') as f:
             text = f.read()
         # logd(text)
         loge("继续运行")
-        pass
-
-    def home(self):
-        # popen返回文件对象，跟open操作一样
-        cmd = r'adb -s {} shell input keyevent 3'.format(self.deviceVo.device_w)
-        with os.popen(cmd, 'r') as f:
-            text = f.read()
-        logd(text)
         pass
 
     def currentAppActivity(self):
@@ -465,18 +469,19 @@ class BaseOptions:
 
     def swipe_2_getpoint1(self, re_scale=False):
         if re_scale:
+            self.g_swipe_times = 0
             self.swipe2Top()
             pass
 
         x = 0
         y = 0
         while True:
-            loge("当前滑动次数：{}".format(g_swipe_times))
+            loge("当前滑动次数：{}".format(self.g_swipe_times))
             input_data = self.get_input_num("请输入操作(1下页 2定点 3重置 0退出):", [0, 1, 2, 3])
 
             if input_data == 1:
                 self.swipeVNxt5_1()
-                g_swipe_times += 1
+                self.g_swipe_times += 1
                 continue
                 pass
 
@@ -487,46 +492,15 @@ class BaseOptions:
 
             if input_data == 3:
                 self.swipe2Top()
-                g_swipe_times = 0
+                self.g_swipe_times = 0
                 continue
                 pass
             break
             pass
-        return x, y, g_swipe_times
+        return x, y, self.g_swipe_times
         pass
 
-    def swipe_2_getpoint2(self, re_scale=False):
-        if re_scale:
-            self.swipe2Top()
-            pass
-
-        x = 0
-        y = 0
-        while True:
-            input_data = self.get_input_num("请输入操作(1下页 2定点 3重置 退出):", [0, 1, 2, 3])
-
-            if input_data == 1:
-                self.swipeVNxt5_1()
-                g_swipe_times += 1
-                continue
-                pass
-
-            if input_data == 2:
-                x, y = self.get_point()
-                continue
-                pass
-
-            if input_data == 3:
-                self.swipe2Top()
-                g_swipe_times = 0
-                continue
-                pass
-            break
-            pass
-        return x, y, g_swipe_times
-        pass
-
-    def get_input_num(self, hint, wanna):
+    def get_input_num(self, hint, wannas):
 
         while True:
             pos = input(hint)
@@ -536,7 +510,7 @@ class BaseOptions:
 
             pos = int(pos)
 
-            if not wanna.__contains__(pos):
+            if not wannas.__contains__(pos):
                 continue
                 pass
 
@@ -547,6 +521,11 @@ class BaseOptions:
 
     def swipe_click(self, point_app, point_name):
         vo = self.get_pointInfo(point_app, point_name)
+        if vo is None:
+            messagebox.showinfo(self.deviceVo.device_w, "请确定点击按钮{} {}".format(point_app, point_name))
+            self.save_pointInfo(point_app, point_name, re_scale=False)
+            pass
+
         for i in range(vo.point_swipe_times):
             self.swipeVNxt5_1()
             pass

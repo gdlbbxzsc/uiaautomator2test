@@ -12,12 +12,6 @@ g_point_name_tap_baoxiang_task = "tap_baoxiang_task"
 g_point_name_tap_kanguanggao_task = "tap_kanguanggao_task"
 g_point_name_tap_liulanshangpin_task = "tap_liulanshangpin_task"
 
-g_point_name_tap_zoulu_task = "tap_zoulu_task"
-g_point_name_tap_zoulu_task_shou = "tap_zoulu_task_shou"
-
-g_point_name_tap_shuijiao_task = "tap_shuijiao_task"
-g_point_name_tap_shuijiao_task_shou = "tap_shuijiao_task_shou"
-
 g_point_name_tap_kanxiaoshuo_task = "tap_kanxiaoshuo_task"
 g_point_name_tap_kanxiaoshuo_task_book = "tap_kanxiaoshuo_task_book"
 g_point_name_tap_kanxiaoshuo_task_book_ad = "tap_kanxiaoshuo_task_book_ad"
@@ -45,27 +39,10 @@ class ProDouYinJiSuBan(BaseOptions):
             pass
         pass
 
-    def load_points(self):
-
-        self.save_pointInfo(g_app_name, g_point_name_tap_kanguanggao_task, re_scale=True)
-        self.save_pointInfo(g_app_name, g_point_name_tap_liulanshangpin_task, re_scale=True)
-
-        self.save_pointInfo(g_app_name, g_point_name_tap_zoulu_task, re_scale=True)
-        self.save_pointInfo(g_app_name, g_point_name_tap_zoulu_task_shou, re_scale=True)
-
-        self.save_pointInfo(g_app_name, g_point_name_tap_shuijiao_task, re_scale=True)
-        self.save_pointInfo(g_app_name, g_point_name_tap_shuijiao_task_shou, re_scale=True)
-
-        self.save_pointInfo(g_app_name, g_point_name_tap_kanxiaoshuo_task, re_scale=True)
-        self.save_pointInfo(g_app_name, g_point_name_tap_kanxiaoshuo_task_book, re_scale=True)
-        self.save_pointInfo(g_app_name, g_point_name_tap_kanxiaoshuo_task_book_ad, re_scale=True)
-
-        pass
-
     def goTaskCenter(self):
         loge("去任务中心")
         self.click(self.screenVo.center_x, self.screenVo.bottomDp(26))
-        self.sleep(15)
+        self.sleep(8)
 
         self.swipeVPrePage()
         self.swipeVPrePage()
@@ -98,18 +75,16 @@ class ProDouYinJiSuBan(BaseOptions):
         loge("滑动到看小说-点击")
         self.swipe_click(g_app_name, g_point_name_tap_kanxiaoshuo_task)
 
-        self.sleep(10)
+        self.sleep(5)
 
         loge("点击看小说书名")
         self.swipe_click(g_app_name, g_point_name_tap_kanxiaoshuo_task_book)
-
-        self.sleep(4)
 
         loge("看小说")
         # 翻页一百次
         for i in range(4):
             # 活去看小说权限 看一次广告
-            self.sleep(8)
+            self.sleep(4)
             # 点击看小说中广告
             self.swipe_click(g_app_name, g_point_name_tap_kanxiaoshuo_task_book_ad)
             loge("小说广告")
@@ -230,78 +205,6 @@ class ProDouYinJiSuBan(BaseOptions):
         self.getRecordDb().insert(vo)
         pass
 
-    def zoulu(self):
-        vo = self.getTaskDb().select_task(g_app_name, "zoulu")
-
-        if vo is None:
-            vo = TaskVo()
-            vo.device = self.deviceVo.device_u
-            vo.task_app = g_app_name
-            vo.task_name = "zoulu"
-            vo.task_time_jiange = 7200
-            pass
-
-        if int(time.time()) < vo.task_finish + vo.task_time_jiange:
-            return
-            pass
-
-        self.goTaskCenter()
-
-        loge("滑动到走路-点击")
-        self.swipe_click(g_app_name, g_point_name_tap_zoulu_task)
-        self.sleep(4)
-
-        loge("点击收钱")
-        self.swipe_click(g_app_name, g_point_name_tap_zoulu_task_shou)
-        self.sleep(1)
-
-        loge("退出走路")
-        self.back()
-
-        loge("退出去赚钱页面")
-        self.back()
-
-        vo.task_finish = int(time.time())
-        self.getTaskDb().save(vo)
-
-        pass
-
-    def qichuangling(self):
-        vo = self.getTaskDb().select_task(g_app_name, "qichuangling")
-
-        if vo is None:
-            vo = TaskVo()
-            vo.device = self.deviceVo.device_u
-            vo.task_app = g_app_name
-            vo.task_name = "qichuangling"
-            vo.task_times = 1
-            pass
-
-        allcount = self.getRecordDb().count(vo.device, vo.task_app, vo.task_name)
-        if allcount >= vo.task_times:
-            return
-            pass
-
-        self.goTaskCenter()
-
-        loge("滑动到睡觉-点击")
-        self.swipe_click(g_app_name, g_point_name_tap_shuijiao_task)
-        self.sleep(4)
-
-        loge("点击收钱")
-        self.swipe_click(g_app_name, g_point_name_tap_shuijiao_task_shou)
-        self.sleep(1)
-
-        loge("退出走路")
-        self.back()
-
-        loge("退出去赚钱页面")
-        self.back()
-
-        vo.task_finish = int(time.time())
-        self.getTaskDb().save(vo)
-
-        pass
 
     def toAd(self, lookTime):
         loge("看广告")
@@ -310,13 +213,17 @@ class ProDouYinJiSuBan(BaseOptions):
             return
             pass
 
+        while True:
+            ffff
+            pass
+
         loge(lookTime + "秒")
 
         self.sleep(lookTime)
 
         self.back()
         self.back()
-        self.sleep(3)
+        self.sleep(2.5)
         pass
 
     pass
