@@ -52,6 +52,9 @@ def message_to_df(message,company):
     company_adress = []
     Business_Scope = []
 
+
+
+
     list_companys.append(company)
     Registration_status.append(message.split('登记状态')[1].split('\n')[1].split('成立日期')[0].replace(' ',''))
     Date_of_Establishment.append(message.split('成立日期')[1].split('\n')[1].replace(' ',''))
